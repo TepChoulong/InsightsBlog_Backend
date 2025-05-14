@@ -1,6 +1,7 @@
-export function Success(status, message, data) {
+export function Success(status, message, data, access_token) {
   return {
-    data: data || "",
+    access_token: access_token || null,
+    data: data || null,
     status: status,
     message: message,
   };

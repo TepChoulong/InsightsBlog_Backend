@@ -1,22 +1,33 @@
 import express from "express";
+import dotenv from "dotenv";
+import path from "path";
+
+import { fileURLToPath } from "url";
+
+dotenv.config();
+
+import db from "./libs/db.js";
 
 // Import Routers
-import authenticationRouter from "./routers/authentication.router.js";
+import authRoute from "./routers/authRoute.js";
+import postRoute from "./routers/postRoute.js";
 
-const PORT = 3000;
+const PORT = process.env.PORT;
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 
 app.use(express.json());
+app.use(express.static(path.join(__dirname, "dist"))); // or 'build' for Client Rendering
 
 // Apply Routers
-app.use("/api/v1/authentication/admin", authenticationRouter);
+app.use("/api/v1/auth/admin", authRoute);
+app.use("/api/v1/post", postRoute);
 
-app.get("/", (req, res) => {
-  res.send("Hello World!");
-});
-
-app.listen(PORT, (err) => {
+app.listen(PORT, async (err) => {
+  await db.connectDB();
   if (err) {
     console.log(err);
     return;
